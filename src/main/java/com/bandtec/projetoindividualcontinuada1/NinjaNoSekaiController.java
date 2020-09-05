@@ -1,5 +1,6 @@
 package com.bandtec.projetoindividualcontinuada1;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sun.security.krb5.KdcComm;
 
@@ -119,13 +120,19 @@ public class NinjaNoSekaiController {
 
     //GETs
     @GetMapping("/ninjas")
-    public List<Ninja> getNinjas() {
-        return listaNinjas;
+    public ResponseEntity getNinjas() {
+        if (listaNinjas.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.ok(listaNinjas);
     }
 
     @GetMapping("/ninjas-classe/{classe}")
-    public List<Ninja> getNinjasClasse(@PathVariable String classe) {
+    public ResponseEntity getNinjasClasse(@PathVariable String classe) {
         List<Ninja> returnNinja = new ArrayList<>();
+        if (listaNinjas.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
         for (Ninja c : listaNinjas) {
             switch (classe.toLowerCase()) {
                 case "gennin":
@@ -149,195 +156,258 @@ public class NinjaNoSekaiController {
                     }
                     break;
                 default:
-                    return returnNinja;
+                    return ResponseEntity.status(204).build();
             }
         }
-        return returnNinja;
+        return ResponseEntity.ok(returnNinja);
     }
 
-    @GetMapping("buscar/ninja/{id}")
-    public Ninja buscaNinjaID(@PathVariable int id) {
-        return listaNinjas.get(id - 1);
+    @GetMapping("/ninja/{id}")
+    public ResponseEntity buscaNinjaID(@PathVariable int id) {
+        if (listaNinjas.size() >= id) {
+            return ResponseEntity.ok(listaNinjas.get(id - 1));
+        }
+        return ResponseEntity.status(404).build();
     }
 
     @GetMapping("/missoes")
-    public List<Missao> getMissoes() {
-        return listaMissao;
+    public ResponseEntity getMissoes() {
+        if (listaMissao.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.ok(listaMissao);
     }
 
-    @GetMapping("buscar/missao/{id}")
-    public Missao buscaMissaoID(@PathVariable int id) {
-        return listaMissao.get(id - 1);
+    @GetMapping("/missao/{id}")
+    public ResponseEntity buscaMissaoID(@PathVariable int id) {
+        if (listaMissao.size() >= id) {
+            return ResponseEntity.ok(listaMissao.get(id - 1));
+        }
+        return ResponseEntity.status(404).build();
     }
 
     //POSTs
-    @PostMapping("/cadastrar/ninja/gennin")
-    public void cadastrarNinjaG(@RequestBody Gennin n) {
+    @PostMapping("/ninja/gennin")
+    public ResponseEntity cadastrarNinjaG(@RequestBody Gennin n) {
         listaNinjas.add(n);
+        return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/cadastrar/ninja/chunnin")
-    public void cadastrarNinjaC(@RequestBody Chunnin n) {
+    @PostMapping("/ninja/chunnin")
+    public ResponseEntity cadastrarNinjaC(@RequestBody Chunnin n) {
         listaNinjas.add(n);
+        return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/cadastrar/ninja/jonnin")
-    public void cadastrarNinjaJ(@RequestBody Jonnin n) {
+    @PostMapping("/ninja/jonnin")
+    public ResponseEntity cadastrarNinjaJ(@RequestBody Jonnin n) {
         listaNinjas.add(n);
+        return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/cadastrar/ninja/anbu")
-    public void cadastrarNinjaA(@RequestBody Anbu n) {
+    @PostMapping("/ninja/anbu")
+    public ResponseEntity cadastrarNinjaA(@RequestBody Anbu n) {
         listaNinjas.add(n);
+        return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/cadastrar/missao")
-    public void cadastrarMissao(@RequestBody Missao m) {
+    @PostMapping("/missao")
+    public ResponseEntity cadastrarMissao(@RequestBody Missao m) {
         listaMissao.add(m);
+        return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/cadastrar/ninja/missao/gennin/{id}")
-    public void cadastrarNinjaMissaoGennin(@PathVariable int id, @RequestBody Gennin n) {
-        listaMissao.get(id - 1).addNinjaMissao(n);
+    @PostMapping("/ninja/missao/gennin/{id}")
+    public ResponseEntity cadastrarNinjaMissaoGennin(@PathVariable int id, @RequestBody Gennin n) {
+        if (listaMissao.size() >= id) {
+            listaMissao.get(id - 1).addNinjaMissao(n);
+            return ResponseEntity.status(201).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 
-    @PostMapping("/cadastrar/ninja/missao/chunnin/{id}")
-    public void cadastrarNinjaMissaoChunnin(@PathVariable int id, @RequestBody Chunnin n) {
-        listaMissao.get(id - 1).addNinjaMissao(n);
+    @PostMapping("/ninja/missao/chunnin/{id}")
+    public ResponseEntity cadastrarNinjaMissaoChunnin(@PathVariable int id, @RequestBody Chunnin n) {
+        if (listaMissao.size() >= id) {
+            listaMissao.get(id - 1).addNinjaMissao(n);
+            return ResponseEntity.status(201).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 
-    @PostMapping("/cadastrar/ninja/missao/jonnin/{id}")
-    public void cadastrarNinjaMissaoJonnin(@PathVariable int id, @RequestBody Jonnin n) {
-        listaMissao.get(id - 1).addNinjaMissao(n);
+    @PostMapping("/ninja/missao/jonnin/{id}")
+    public ResponseEntity cadastrarNinjaMissaoJonnin(@PathVariable int id, @RequestBody Jonnin n) {
+        if (listaMissao.size() >= id) {
+            listaMissao.get(id - 1).addNinjaMissao(n);
+            return ResponseEntity.status(201).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 
-    @PostMapping("/cadastrar/ninja/missao/anbu/{id}")
-    public void cadastrarNinjaMissaoGAnbu(@PathVariable int id, @RequestBody Anbu n) {
-        listaMissao.get(id - 1).addNinjaMissao(n);
+    @PostMapping("/ninja/missao/anbu/{id}")
+    public ResponseEntity cadastrarNinjaMissaoGAnbu(@PathVariable int id, @RequestBody Anbu n) {
+        if (listaMissao.size() >= id) {
+            listaMissao.get(id - 1).addNinjaMissao(n);
+            return ResponseEntity.status(201).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 
     //DETELEs
-    @DeleteMapping("/excluir/ninja/{id}")
-    public void excluirNinja(@PathVariable int id) {
-        String nomeN = listaNinjas.get(id - 1).getNome();
-        for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
-            for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
-                if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
-                    int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
-                    excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+    @DeleteMapping("/ninja/{id}")
+    public ResponseEntity excluirNinja(@PathVariable int id) {
+        if (listaNinjas.size() >= id) {
+            String nomeN = listaNinjas.get(id - 1).getNome();
+            for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
+                for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
+                    if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
+                        int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
+                        excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+                    }
                 }
             }
+            listaNinjas.remove(id - 1);
+            return ResponseEntity.ok().build();
         }
-        listaNinjas.remove(id - 1);
+        return ResponseEntity.status(404).build();
     }
 
-    @DeleteMapping("/excluir/missao/{id}")
-    public void excluirMissao(@PathVariable int id) {
-        listaMissao.remove(id - 1);
+    @DeleteMapping("/missao/{id}")
+    public ResponseEntity excluirMissao(@PathVariable int id) {
+        if (listaMissao.size() >= id) {
+            listaMissao.remove(id - 1);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(404).build();
     }
 
-    @DeleteMapping("/excluir/missao/ninja/{idm}/{idn}")
-    public void excluirNinjaMissao(@PathVariable int idm, @PathVariable int idn) {
-        listaMissao.get(idm - 1).getListNinja().remove(idn - 1);
+    @DeleteMapping("/missao/ninja/{idm}/{idn}")
+    public ResponseEntity excluirNinjaMissao(@PathVariable int idm, @PathVariable int idn) {
+        if (listaMissao.size() >= idm) {
+            if (listaMissao.get(idm - 1).getListNinja().size() >= idn) {
+                listaMissao.get(idm - 1).getListNinja().remove(idn - 1);
+                return ResponseEntity.ok().build();
+            }
+        }
+        return ResponseEntity.status(404).build();
     }
 
     //PUTs
-    @PutMapping("/atualizar/ninja/gennin/{id}")
-    public void atualizarNinjaG(@PathVariable int id, @RequestBody Gennin n) {
-        if (listaNinjas.get(id - 1).getTipoNinja().equals("Gennin")) {
-            String nomeN = listaNinjas.get(id - 1).getNome();
-            for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
-                for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
-                    if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
-                        int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
-                        if (listaMissao.get(idM).getRank() == 'D' || listaMissao.get(idM).getRank() == 'C') {
-                            listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
-                        } else {
-                            excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+    @PutMapping("/ninja/gennin/{id}")
+    public ResponseEntity atualizarNinjaG(@PathVariable int id, @RequestBody Gennin n) {
+        if (listaNinjas.size() >= id) {
+            if (listaNinjas.get(id - 1).getTipoNinja().equals("Gennin")) {
+                String nomeN = listaNinjas.get(id - 1).getNome();
+                for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
+                    for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
+                        if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
+                            int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
+                            if (listaMissao.get(idM).getRank() == 'D' || listaMissao.get(idM).getRank() == 'C') {
+                                listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
+                            } else {
+                                excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+                            }
                         }
                     }
                 }
+                listaNinjas.set(id - 1, n);
+                return ResponseEntity.ok().build();
             }
-            listaNinjas.set(id - 1, n);
+            return ResponseEntity.status(403).build();//(indica que um recurso não é permitido mesmo com as credenciais de acesso fornecidas
         }
-
+        return ResponseEntity.status(404).build();
     }
 
-    @PutMapping("/atualizar/ninja/chunnin/{id}")
-    public void atualizarNinjaC(@PathVariable int id, @RequestBody Chunnin n) {
-        String tipoNome = listaNinjas.get(id - 1).getTipoNinja();
-        if (tipoNome.equals("Chunnin") || tipoNome.equals("Gennin")) {
-            String nomeN = listaNinjas.get(id - 1).getNome();
-            for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
-                for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
-                    if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
-                        int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
-                        if (listaMissao.get(idM).getRank() == 'C' || listaMissao.get(idM).getRank() == 'B') {
-                            listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
-                        } else {
-                            excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+    @PutMapping("/ninja/chunnin/{id}")
+    public ResponseEntity atualizarNinjaC(@PathVariable int id, @RequestBody Chunnin n) {
+        if (listaNinjas.size() >= id) {
+            String tipoNome = listaNinjas.get(id - 1).getTipoNinja();
+            if (tipoNome.equals("Chunnin") || tipoNome.equals("Gennin")) {
+                String nomeN = listaNinjas.get(id - 1).getNome();
+                for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
+                    for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
+                        if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
+                            int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
+                            if (listaMissao.get(idM).getRank() == 'C' || listaMissao.get(idM).getRank() == 'B') {
+                                listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
+                            } else {
+                                excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+                            }
                         }
                     }
                 }
+                listaNinjas.set(id - 1, n);
+                return ResponseEntity.ok().build();
             }
-            listaNinjas.set(id - 1, n);
+            return ResponseEntity.status(403).build();
         }
+        return ResponseEntity.status(404).build();
     }
 
-    @PutMapping("/atualizar/ninja/jonnin/{id}")
-    public void atualizarNinjaJ(@PathVariable int id, @RequestBody Jonnin n) {
-        String tipoNome = listaNinjas.get(id - 1).getTipoNinja();
-        if (tipoNome.equals("Jonnin") || tipoNome.equals("Anbu") || tipoNome.equals("Chunnin") || tipoNome.equals("Gennin")) {
-            String nomeN = listaNinjas.get(id - 1).getNome();
-            for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
-                for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
-                    if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
-                        int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
-                        if (listaMissao.get(idM).getRank() == 'D' || listaMissao.get(idM).getRank() == 'C' ||
-                                listaMissao.get(idM).getRank() == 'B' || listaMissao.get(idM).getRank() == 'A' || listaMissao.get(idM).getRank() == 'S') {
-                            listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
-                        } else {
-                            excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+    @PutMapping("/ninja/jonnin/{id}")
+    public ResponseEntity atualizarNinjaJ(@PathVariable int id, @RequestBody Jonnin n) {
+        if (listaNinjas.size() >= id) {
+            String tipoNome = listaNinjas.get(id - 1).getTipoNinja();
+            if (tipoNome.equals("Jonnin") || tipoNome.equals("Anbu") || tipoNome.equals("Chunnin") || tipoNome.equals("Gennin")) {
+                String nomeN = listaNinjas.get(id - 1).getNome();
+                for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
+                    for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
+                        if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
+                            int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
+                            if (listaMissao.get(idM).getRank() == 'D' || listaMissao.get(idM).getRank() == 'C' ||
+                                    listaMissao.get(idM).getRank() == 'B' || listaMissao.get(idM).getRank() == 'A' || listaMissao.get(idM).getRank() == 'S') {
+                                listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
+                            } else {
+                                excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+                            }
                         }
                     }
                 }
+                listaNinjas.set(id - 1, n);
+                return ResponseEntity.ok().build();
             }
-            listaNinjas.set(id - 1, n);
+            return ResponseEntity.status(403).build();
         }
+        return ResponseEntity.status(404).build();
     }
 
-    @PutMapping("/atualizar/ninja/anbu/{id}")
-    public void atualizarNinjaA(@PathVariable int id, @RequestBody Anbu n) {
-        String tipoNome = listaNinjas.get(id - 1).getTipoNinja();
-        if (tipoNome.equals("Anbu") || tipoNome.equals("Jonnin") || tipoNome.equals("Chunnin") || tipoNome.equals("Gennin")) {
-            String nomeN = listaNinjas.get(id - 1).getNome();
-            for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
-                for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
-                    if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
-                        int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
-                        if (listaMissao.get(idM).getRank() == 'B' || listaMissao.get(idM).getRank() == 'A' || listaMissao.get(idM).getRank() == 'S') {
-                            listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
-                        } else {
-                            excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+    @PutMapping("/ninja/anbu/{id}")
+    public ResponseEntity atualizarNinjaA(@PathVariable int id, @RequestBody Anbu n) {
+        if (listaNinjas.size() >= id) {
+            String tipoNome = listaNinjas.get(id - 1).getTipoNinja();
+            if (tipoNome.equals("Anbu") || tipoNome.equals("Jonnin") || tipoNome.equals("Chunnin") || tipoNome.equals("Gennin")) {
+                String nomeN = listaNinjas.get(id - 1).getNome();
+                for (int idLMissao = 0; idLMissao < listaMissao.size(); idLMissao++) {
+                    for (int idLNinjaM = 0; idLNinjaM < listaMissao.get(idLMissao).getListNinja().size(); idLNinjaM++) {
+                        if (nomeN.equals(listaMissao.get(idLMissao).getListNinja().get(idLNinjaM).getNome())) {
+                            int idM = listaMissao.indexOf(listaMissao.get(idLMissao));
+                            if (listaMissao.get(idM).getRank() == 'B' || listaMissao.get(idM).getRank() == 'A' || listaMissao.get(idM).getRank() == 'S') {
+                                listaMissao.get(idM).getListNinja().set(idLNinjaM, n);
+                            } else {
+                                excluirNinjaMissao(idM + 1, idLNinjaM + 1);
+                            }
                         }
                     }
                 }
+                listaNinjas.set(id - 1, n);
+                return ResponseEntity.ok().build();
             }
-            listaNinjas.set(id - 1, n);
+            return ResponseEntity.status(403).build();
         }
+        return ResponseEntity.status(404).build();
     }
 
-    @PutMapping("/atualizar/missao/{id}")
-    public void atualizarMissao(@PathVariable int id, @RequestBody Missao m) {
-        int idMissao = id - 1;
-        List<Ninja> listaNinjaMissao = listaMissao.get(idMissao).getListNinja();
-        listaMissao.set(idMissao, m);
-        for(Ninja n: listaNinjaMissao){
-            listaMissao.get(idMissao).addNinjaMissao(n);
+    @PutMapping("/missao/{id}")
+    public ResponseEntity atualizarMissao(@PathVariable int id, @RequestBody Missao m) {
+        if (listaMissao.size() >= id) {
+            int idMissao = id - 1;
+            List<Ninja> listaNinjaMissao = listaMissao.get(idMissao).getListNinja();
+            listaMissao.set(idMissao, m);
+            for (Ninja n : listaNinjaMissao) {
+                listaMissao.get(idMissao).addNinjaMissao(n);
+            }
+            return ResponseEntity.ok().build();
         }
-
-
+        return ResponseEntity.status(404).build();
     }
-
-
 }
